@@ -1,12 +1,12 @@
 rundeck
 ==============
 
-This repository contains the source for the [Rundeck](http://rundeck.org/) [docker](https://docker.io) image.
+This repository contains the source for the [Rundeck](http://rundeck.org/) [docker](https://docker.io) image thanks to Jordan jjethwa/rundeck.
 
 # Image details
 
 1. Based on debian:stretch
-1. Supervisor, MariaDB, and rundeck
+1. Rundeck®
 1. It can take anywhere from 30 seconds to a few minutes for Rundeck to start depending on the available resources for the container (and host VM).
 1. No SSH.  Use docker exec or [nsenter](https://github.com/jpetazzo/nsenter)
 1. If RUNDECK_PASSWORD is not supplied, it will be randomly generated and shown via stdout.
@@ -18,20 +18,20 @@ This repository contains the source for the [Rundeck](http://rundeck.org/) [dock
 # Automated build
 
 ```
-docker pull jordan/rundeck
+docker pull fuzaro/rundeck
 ```
 
 # Usage
 Start a new container and bind to host's port 4440
 
 ```
-sudo docker run -p 4440:4440 -e EXTERNAL_SERVER_URL=http://MY.HOSTNAME.COM:4440 --name rundeck -t jordan/rundeck:latest
+sudo docker run -p 4440:4440 -e EXTERNAL_SERVER_URL=http://MY.HOSTNAME.COM:4440 --name rundeck -t fuzaro/rundeck:latest
 ```
 
 # SSL
 Start a new container, bind to host's port 4443, and enable SSL.   Note: Make sure to update /etc/rundeck/ssl/keystore and /etc/rundeck/ssl/truststore for Production systems as the default certificate is self-signed. Set KEYSTORE_PASS & TRUSTSTORE_PASS to the passwords of those files. Both files can be volume mounted.
 ```
-sudo docker run -p 4443:4443 -e EXTERNAL_SERVER_URL=https://MY.HOSTNAME.COM:4443 -e RUNDECK_WITH_SSL=true --name rundeck -t jordan/rundeck:latest
+sudo docker run -p 4443:4443 -e EXTERNAL_SERVER_URL=https://MY.HOSTNAME.COM:4443 -e RUNDECK_WITH_SSL=true --name rundeck -t fuzaro/rundeck:latest
 ```
 
 # Rundeck plugins
@@ -50,7 +50,7 @@ EXTERNAL_SERVER_URL - Use this if you are running rundeck behind a proxy.  This 
 
 RDECK_JVM_SETTINGS - Additional parameters sent to the rundeck JVM (ex: -Xmx1024m -Xms256m -XX:MaxMetaspaceSize=256m -server -Dfile.encoding=UTF-8 -Dserver.web.context=/rundeck)
 
-DATABASE_URL - For use with (container) external database (ex: jdbc:mysql://<HOSTNAME>:<PORT>/rundeckdb?autoReconnect=true)
+DATABASE_URL - For use with (container) external database (ex: jdbc:postgresql://<HOSTNAME>:<PORT>/rundeckdb?autoReconnect=true)
 
 RUNDECK_UID - The unix user ID to be used for the rundeck account when rundeck is booted.  This is useful for embedding this docker container into your development environment sharing files via docker volumes between the container and your host OS.  RUNDECK_GID also needs to be defined for this overload to take place.
 
@@ -58,7 +58,7 @@ RUNDECK_GID - The unix group ID to be used for the rundeck account when rundeck 
 
 RUNDECK_WITH_SSL - Enable SSL
 
-RUNDECK_PASSWORD - MySQL 'rundeck' user password
+RUNDECK_PASSWORD - PostgreSQL 'rundeck' user password
 
 RUNDECK_ADMIN_PASSWORD - The rundeck server admin password
 
@@ -80,9 +80,9 @@ SMTP_DEFAULT_FROM - The from address to use for email notifications.
 
 DEBIAN_SYS_MAINT_PASSWORD - No longer used as of Debian Stretch
 
-NO_LOCAL_MYSQL - false (default).  Set to true if using an external MySQL container or instance.  Make sure to set DATABASE_URL and RUNDECK_PASSWORD (used for JDBC connection to MySQL).  Further details for setting up MYSQL: http://rundeck.org/docs/administration/setting-up-an-rdb-datasource.html
+NO_LOCAL_POSTGRESQL - true (default).  Set to true if using an external PostgreSQL container or instance.  Make sure to set DATABASE_URL and RUNDECK_PASSWORD (used for JDBC connection to PostgreSQL).  Further details for setting up PostgreSQL: http://rundeck.org/docs/administration/setting-up-an-rdb-datasource.html
 
-LOGIN_MODULE - RDpropertyfilelogin(default) or ldap. See: http://rundeck.org/docs/administration/authenticating-users.html
+LOGIN_MODULE - RDpropertyfilelogin(default), ldap or multiauth(jaas) (better). See: http://rundeck.org/docs/administration/authenticating-users.html
 
 JAAS_CONF_FILE - ldap configuration file name if ldap. You will need to mount the same file at /etc/rundeck/<filename of ldap>. See: http://rundeck.org/docs/administration/authenticating-users.html
 
@@ -110,13 +110,13 @@ sudo docker run -p 4440:4440 \
   -e HTTP_PROXY="http://WEBPROXY:PORT" \
   -e HTTPS_PROXY="http://WEBPROXY:PORT" \
   -e RDECK_JVM_SETTINGS="-Djava.net.useSystemProxies=true" \
-  --name rundeck -t jordan/rundeck:latest
+  --name rundeck -t fuzaro/rundeck:latest
 ```
 # External database instances
-The container starts it's own MySQL/MariaDB instance by default.  If you prefer to use an external database, you must set the following environment variables
+The container not starts any database instance, use an external database, and set the following environment variables
 ```
 SKIP_DATABASE_SETUP=true
-DATABASE_URL=<MYSQL_OR_POSTGRES_JDBC_URL>
+DATABASE_URL=<POSTGRES_JDBC_URL>
 DATABASE_ADMIN_USER=<DATABASE_ADMIN_USER>
 DATABASE_ADMIN_PASSWORD=<DATABASE_ADMIN_PASSWORD>
 ```
