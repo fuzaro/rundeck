@@ -15,11 +15,12 @@ This repository contains the source for the [Rundeck](http://rundeck.org/) [dock
 1. I sometimes get connection reset by peer errors when building the Docker image from the Rundeck download URL.  Trying again usually works.
 
 
-# Automated build
+<!--- # Automated build
 
 ```
 docker pull fuzaro/rundeck
 ```
+--->
 
 # Usage
 Start a new container and bind to host's port 4440
