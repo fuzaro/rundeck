@@ -60,27 +60,27 @@ if [ ! -f "${initfile}" ]; then
     RUNDECK_ADMIN_PASSWORD=$(< /run/secrets/RUNDECK_ADMIN_PASSWORD)
   fi
 
-   DATABASE_URL=${DATABASE_URL:-"jdbc:mysql://localhost/rundeckdb?autoReconnect=true"}
+   DATABASE_URL=${DATABASE_URL:-"jdbc:postgresql://${DATABASE_HOST}/rundeckdb?autoReconnect=true"}
    RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
    DATABASE_ADMIN_PASSWORD=${DATABASE_ADMIN_PASSWORD:-${RUNDECK_PASSWORD}}
    DATABASE_ADMIN_USER=${DATABASE_ADMIN_USER:-rundeck}
    RUNDECK_STORAGE_PROVIDER=${RUNDECK_STORAGE_PROVIDER:-"file"}
    RUNDECK_PROJECT_STORAGE_TYPE=${RUNDECK_PROJECT_STORAGE_TYPE:-"file"}
-   NO_LOCAL_MYSQL=${NO_LOCAL_MYSQL:-"false"}
+   NO_LOCAL_MYSQL=${NO_LOCAL_MYSQL:-"true"}
    SKIP_DATABASE_SETUP=${SKIP_DATABASE_SETUP:-"false"}
    LOGIN_MODULE=${LOGIN_MODULE:-"RDpropertyfilelogin"}
    JAAS_CONF_FILE=${JAAS_CONF_FILE:-"jaas-loginmodule.conf"}
    KEYSTORE_PASS=${KEYSTORE_PASS:-"adminadmin"}
    TRUSTSTORE_PASS=${TRUSTSTORE_PASS:-${KEYSTORE_PASS}}
 
-   update_user_password () {
-      (
-      echo "UPDATE mysql.user SET password=PASSWORD('${2}') WHERE user='${1}';"
-      echo "FLUSH PRIVILEGES;"
-      echo "quit"
-      ) |
-      mysql
-   }
+#   update_user_password () {
+#      (
+#      echo "UPDATE mysql.user SET password=PASSWORD('${2}') WHERE user='${1}';"
+#      echo "FLUSH PRIVILEGES;"
+#      echo "quit"
+#      ) |
+#      mysql
+#   }
 
    echo "=>Initializing rundeck - This may take a few minutes"
    if [ ! -f /var/lib/rundeck/.ssh/id_rsa ]; then
@@ -110,9 +110,9 @@ if [ ! -f "${initfile}" ]; then
       if [ "$(ls -A /var/lib/mysql)" ]; then
          /etc/init.d/mysql start
       else
-         echo "=>MySQL datadir is empty...initializing"
-         /usr/bin/mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
-         /etc/init.d/mysql start
+         echo "=>MySQL datadir is empty...not initializing"
+#         /usr/bin/mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+#         /etc/init.d/mysql start
      fi
 
      (
@@ -120,11 +120,11 @@ if [ ! -f "${initfile}" ]; then
      echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'localhost' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
      echo "quit"
      ) |
-     mysql
-     sleep 5
-     /etc/init.d/mysql stop
+#     mysql
+#    sleep 5
+#    /etc/init.d/mysql stop
      # Add MySQL to supervisord conf
-     cat /opt/mysql.conf >> /etc/supervisor/conf.d/rundeck.conf
+#     cat /opt/mysql.conf >> /etc/supervisor/conf.d/rundeck.conf
    else
       echo "=>NO_LOCAL_MYSQL set to true.  Skipping local MySQL setup"
       if [[ "${DATABASE_URL}" == *"mysql"* && "${SKIP_DATABASE_SETUP}" != "true" ]]; then
