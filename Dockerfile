@@ -5,15 +5,16 @@ FROM debian:stretch
 
 MAINTAINER Luiz Fuzaro
 
-ENV SERVER_URL=https://localhost:4443 \
+ENV SERVER_URL=https://localhost:4443/rundeck \
     RUNDECK_STORAGE_PROVIDER=file \
     RUNDECK_PROJECT_STORAGE_TYPE=file \
     NO_LOCAL_MYSQL=true \
-    LOGIN_MODULE=RDpropertyfilelogin \
-    JAAS_CONF_FILE=jaas-loginmodule.conf \
+    LOGIN_MODULE=ldap \
+    JAAS_CONF_FILE=jaas-ldap.conf \
     KEYSTORE_PASS=adminadmin \
-    TRUSTSTORE_PASS=adminadmin
-
+    TRUSTSTORE_PASS=adminadmin \
+    http_proxy='http://10.159.10.150:8213' \
+    https_proxy='http://10.159.10.150:8213' 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     echo "deb http://ftp.debian.org/debian stretch-backports main" >> /etc/apt/sources.list && \
     apt-get -qq update && \

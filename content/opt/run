@@ -13,7 +13,7 @@ if [[ -n "${RUNDECK_GID}" && -n "${RUNDECK_UID}" ]]; then
 fi
 
 # chown directories and files that might be coming from volumes
-chown -R mysql:mysql /var/lib/mysql
+#chown -R mysql:mysql /var/lib/mysql
 chown -R rundeck:rundeck /etc/rundeck
 chown -R rundeck:rundeck /var/rundeck
 chown -R rundeck:adm /var/log/rundeck
@@ -115,11 +115,11 @@ if [ ! -f "${initfile}" ]; then
 #         /etc/init.d/mysql start
      fi
 
-     (
-     echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
-     echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'localhost' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
-     echo "quit"
-     ) |
+#     (
+#     echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
+#     echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'localhost' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
+#     echo "quit"
+#     ) |
 #     mysql
 #    sleep 5
 #    /etc/init.d/mysql stop
