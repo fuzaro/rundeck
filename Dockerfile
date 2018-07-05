@@ -5,10 +5,11 @@ FROM debian:stretch
 
 MAINTAINER Luiz Fuzaro
 
-ENV SERVER_URL=https://localhost:4443/rundeck \
+ENV SERVER_URL=http://localhost:4440/rundeck \
     RUNDECK_STORAGE_PROVIDER=file \
     RUNDECK_PROJECT_STORAGE_TYPE=file \
     NO_LOCAL_MYSQL=true \
+    NO_LOCAL_POSTGRESQL=true \
     LOGIN_MODULE=ldap \
     JAAS_CONF_FILE=jaas-ldap.conf \
     KEYSTORE_PASS=adminadmin \
@@ -18,7 +19,7 @@ ENV SERVER_URL=https://localhost:4443/rundeck \
 RUN export DEBIAN_FRONTEND=noninteractive && \
     echo "deb http://ftp.debian.org/debian stretch-backports main" >> /etc/apt/sources.list && \
     apt-get -qq update && \
-    apt-get -qqy install -t stretch-backports --no-install-recommends bash openjdk-8-jre-headless ca-certificates-java supervisor procps sudo ca-certificates openssh-client postgresql-client-9.6 pwgen curl git uuid-runtime parallel jq && \
+    apt-get -qqy install -t stretch-backports --no-install-recommends bash openjdk-8-jre-headless ca-certificates-java supervisor procps sudo ca-certificates openssh-client postgresql-client-9.6 vim pwgen curl git uuid-runtime parallel jq && \
     cd /tmp/ && \
     curl -Lo /tmp/rundeck.deb http://dl.bintray.com/rundeck/rundeck-deb/rundeck_2.11.4-1-GA_all.deb && \
     echo '9ec3f10a1ef2df974af73d97f795afaa633456aff2e52f3dfb236841d96d108c  rundeck.deb' > /tmp/rundeck.sig && \
