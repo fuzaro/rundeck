@@ -13,9 +13,10 @@ ENV SERVER_URL=http://localhost:4440/rundeck \
     LOGIN_MODULE=ldap \
     JAAS_CONF_FILE=jaas-ldap.conf \
     KEYSTORE_PASS=adminadmin \
-    TRUSTSTORE_PASS=adminadmin \
-    http_proxy='http://10.159.10.150:8213' \
-    https_proxy='http://10.159.10.150:8213' 
+    TRUSTSTORE_PASS=adminadmin
+# \
+#    http_proxy='http://10.159.10.150:8213' \
+#    https_proxy='http://10.159.10.150:8213' 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     echo "deb http://ftp.debian.org/debian stretch-backports main" >> /etc/apt/sources.list && \
     apt-get -qq update && \
