@@ -1,4 +1,4 @@
-# Dockerfile for rundeck
+# Dockerfile for rundeck-stretch
 # https://github.com/fuzaro/rundeck
 
 FROM debian:stretch
